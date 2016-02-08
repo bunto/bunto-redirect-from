@@ -1,0 +1,26 @@
+language: ruby
+before_script: bundle update
+script: "script/cibuild"
+sudo: false
+cache: bundler
+
+matrix:
+  include:
+    - # GitHub Pages
+      rvm: 2.1.1
+      env: GH_PAGES=true
+    - # Ruby 1.9
+      rvm: 1.9
+      env: BUNTO_VERSION=1.0
+  allow_failures:
+    - env: GH_PAGES=true
+  fast_finish: true
+
+rvm:
+  - 2.2
+  - 2.1
+  - 2.0
+env:
+  - ""
+  - BUNTO_VERSION=2.0
+  - BUNTO_VERSION=1.0
