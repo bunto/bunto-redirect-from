@@ -1,0 +1,7 @@
+url: http://bunto.isc
+gems:
+  - bunto-redirect-from
+  - bunto-sitemap
+collections:
+  articles:
+    output: true
