@@ -13,9 +13,8 @@ module BuntoRedirectFrom
       list.each do |item|
         if has_alt_urls?(item)
           alt_urls(item).each do |alt_url|
-            redirect_page = RedirectPage.new(site, site.source, "", "")
+            redirect_page = RedirectPage.new(site, site.source, "", "redirect.html")
             redirect_page.data['permalink'] = alt_url
-            redirect_page.data['sitemap'] = false
             redirect_page.generate_redirect_content(redirect_url(site, item))
             site.pages << redirect_page
           end
@@ -23,9 +22,12 @@ module BuntoRedirectFrom
         if has_redirect_to_url?(item)
           redirect_to_url(item).flatten.each do |alt_url|
             item.data['sitemap'] = false
+            item.data['layout'] = nil
+
+            item.url << "index.html" if item.url.end_with?("/")
             redirect_page = RedirectPage.new(site, site.source, File.dirname(item.url), File.basename(item.url))
+
             redirect_page.data['permalink'] = item.url
-            redirect_page.data['sitemap'] = false
             redirect_page.generate_redirect_content(alt_url)
             if item.is_a?(Bunto::Document)
               item.content = item.output = redirect_page.content
@@ -69,7 +71,7 @@ module BuntoRedirectFrom
     end
 
     def redirect_prefix(site)
-      config_github_url(site) || config_baseurl(site) || ""
+      config_github_url(site) || config_url(site)
     end
 
     def config_github_url(site)
@@ -79,8 +81,10 @@ module BuntoRedirectFrom
       end
     end
 
-    def config_baseurl(site)
-      site.config.fetch('baseurl', nil)
+    def config_url(site)
+      url = site.config.fetch('url', nil) || ""
+      baseurl = site.config.fetch('baseurl', nil) || ""
+      File.join url, baseurl
     end
   end
 end

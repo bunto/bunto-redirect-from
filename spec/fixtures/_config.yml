@@ -1,4 +1,4 @@
-url: http://bunto.isc
+url: https://bunto.github.io
 gems:
   - bunto-redirect-from
   - bunto-sitemap
